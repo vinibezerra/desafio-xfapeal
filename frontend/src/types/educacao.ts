@@ -30,6 +30,30 @@ export type FilterOptions = {
   variables: string[]
 }
 
+export type DashboardSummary = {
+  enrollments: number | null
+  educationOffers: number | null
+  approvalRate: number | null
+  abandonmentRate: number | null
+  municipalities: number
+  schoolsLabel: string
+  percentageAggregation: string
+}
+
+export type SeriesResponse = {
+  variable: string
+  isPercentage: boolean
+  aggregation: string
+  points: Array<{ year: number; value: number | null }>
+}
+
+export type AggregateResponse = {
+  variable: string
+  isPercentage: boolean
+  dimension?: 'network' | 'educationType'
+  points: Array<{ key: string; value: number }>
+}
+
 export type EducationDataItem = {
   id: number
   municipalityCode: string

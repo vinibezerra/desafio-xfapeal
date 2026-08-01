@@ -7,8 +7,18 @@ type DataTableProps = {
 }
 
 const numberFormatter = new Intl.NumberFormat('pt-BR', {
-  maximumFractionDigits: 4,
+  maximumFractionDigits: 0,
 })
+const percentFormatter = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 2,
+})
+
+function formatValue(variable: string, value: number): string {
+  return variable.startsWith('Taxa de')
+    ? `${percentFormatter.format(value)}%`
+    : numberFormatter.format(value)
+}
 
 export default function DataTable({
   data,
@@ -60,7 +70,7 @@ export default function DataTable({
                     <td className="px-4 py-3">{item.educationNetwork}</td>
                     <td className="min-w-56 px-4 py-3">{item.educationType}</td>
                     <td className="px-4 py-3 text-right tabular-nums">
-                      {numberFormatter.format(item.value)}
+                      {formatValue(item.variable, item.value)}
                     </td>
                   </tr>
                 ))}

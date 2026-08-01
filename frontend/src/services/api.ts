@@ -1,7 +1,10 @@
 import type {
+  AggregateResponse,
   DashboardFilters,
+  DashboardSummary,
   FilterOptions,
   PaginatedEducationData,
+  SeriesResponse,
   UploadResult,
 } from '../types/educacao'
 
@@ -13,10 +16,7 @@ type ApiErrorBody = {
   }
 }
 
-async function request<T extends object>(
-  path: string,
-  signal?: AbortSignal,
-): Promise<T> {
+async function request<T extends object>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, { signal })
   const body = (await response.json()) as T | ApiErrorBody
 
@@ -75,6 +75,53 @@ export async function uploadFile(file: File): Promise<UploadResult> {
 
 export function getFilterOptions(signal?: AbortSignal) {
   return request<FilterOptions>('/education/filters', signal)
+}
+
+export function getDashboardSummary(
+  filters: DashboardFilters,
+  signal?: AbortSignal,
+) {
+  return request<DashboardSummary>(
+    `/education/summary?${dashboardQuery(filters)}`,
+    signal,
+  )
+}
+
+export function getDashboardSeries(
+  filters: DashboardFilters,
+  variable: string,
+  signal?: AbortSignal,
+) {
+  return request<SeriesResponse>(
+    `/education/series?${dashboardQuery(filters, { variable })}`,
+    signal,
+  )
+}
+
+export function getDashboardRanking(
+  filters: DashboardFilters,
+  variable: string,
+  signal?: AbortSignal,
+) {
+  return request<AggregateResponse>(
+    `/education/ranking?${dashboardQuery(filters, { variable })}`,
+    signal,
+  )
+}
+
+export function getDashboardBreakdown(
+  filters: DashboardFilters,
+  variable: string,
+  dimension: 'network' | 'educationType',
+  signal?: AbortSignal,
+) {
+  return request<AggregateResponse>(
+    `/education/breakdown?${dashboardQuery(filters, {
+      variable,
+      dimension,
+    })}`,
+    signal,
+  )
 }
 
 export function getEducationData(
